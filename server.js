@@ -1,3 +1,4 @@
+
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
@@ -37,12 +38,12 @@ io.on('connection', (socket) => {
 
     // Handle game code joining
     socket.on('joinGame', (gameCode) => {
-        // Implement logic to check the game code and assign players
         if (!clients.player1) {
             clients.player1 = socket;
         } else if (!clients.player2) {
             clients.player2 = socket;
         }
+        io.emit('gameCodeValid', gameCode);
     });
 
     socket.on('disconnect', () => {
