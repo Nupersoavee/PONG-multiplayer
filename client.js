@@ -1,33 +1,5 @@
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
 
-const socket = io();
-
-// Game variables
-const paddleWidth = 10;
-const paddleHeight = 100;
-const ballSize = 10;
-
-let player1Y = canvas.height / 2 - paddleHeight / 2;
-let player2Y = canvas.height / 2 - paddleHeight / 2;
-let ballX = canvas.width / 2;
-let ballY = canvas.height / 2;
-let ballSpeedX = 5;
-let ballSpeedY = 5;
-
-let generatedGameCode = null; // Store the generated game code
-let joinedGame = false; // Flag to track if the player has joined a game
-
-// Function to generate a random game code
-function generateGameCode() {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let code = '';
-    for (let i = 0; i < 6; i++) {
-        const randomIndex = Math.floor(Math.random() * characters.length);
-        code += characters.charAt(randomIndex);
-    }
-    return code;
-}
+// ... (previous code)
 
 // Handle user interactions
 const createGameButton = document.getElementById('createGameButton');
@@ -70,34 +42,13 @@ function joinGame() {
     }
 }
 
-// Receive updates from the server
-socket.on('gameState', (gameState) => {
-    player1Y = gameState.player1Y;
-    player2Y = gameState.player2Y;
-    ballX = gameState.ballX;
-    ballY = gameState.ballY;
+// Receive game code validation from the server
+socket.on('gameCodeValid', (gameCode) => {
+    if (generatedGameCode === gameCode) {
+        alert('You have successfully joined the game!');
+    } else {
+        alert('Invalid game code. Please enter the correct code.');
+    }
 });
 
-// Update game state and send it to the server
-function update() {
-    if (joinedGame) {
-        // ... (same game update logic as before)
-
-        socket.emit('gameState', {
-            player1Y,
-            player2Y,
-            ballX,
-            ballY,
-        });
-    }
-
-    // ... (same rendering logic as before)
-
-    requestAnimationFrame(update);
-}
-
-// Join a game when the page loads
-window.addEventListener('load', createGame);
-
-// Start the game loop
-update();
+// ... (rest of the code)
